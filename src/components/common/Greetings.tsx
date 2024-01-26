@@ -1,7 +1,11 @@
 import { motion } from "framer-motion";
-import ThemeSwitcher from "../header/ThemeSwitcher";
+import ThemeSwitcher from "./ThemeSwitcher";
+import { useTranslation } from "react-i18next";
 
 export const Greetings = () => {
+    // Translation
+    const { t } = useTranslation()
+
     const transition = {
         duration: 2,
         ease: "easeInOut",
@@ -20,8 +24,9 @@ export const Greetings = () => {
                     opacity: [0, 1, 1, 0]
                 }}
                 transition={transition}
-            // className="absolute top-[0%]"
-            >Hello</motion.p>
+            >
+                {t('header:tHello')}
+            </motion.p>
             <motion.p
                 initial={{ y: "-250%" }}
                 animate={{
@@ -30,7 +35,9 @@ export const Greetings = () => {
                 }}
                 transition={transition}
                 className=""
-            >world!</motion.p>
+            >
+                {t('header:tWorld')}
+            </motion.p>
             <ThemeSwitcher switcherStyles="hidden" />
         </motion.div>
     )

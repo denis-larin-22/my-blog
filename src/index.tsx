@@ -1,8 +1,11 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
 import Root from './Root';
-import { NextUIProvider } from "@nextui-org/react";
+import { NextUIProvider, Spinner } from "@nextui-org/react";
+import { Provider as ReduxProvider } from 'react-redux';
+import { store } from './core/store';
+import './18n';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -10,7 +13,11 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <NextUIProvider>
-      <Root />
+      <Suspense fallback={<Spinner size='lg' />}>
+        <ReduxProvider store={store}>
+          <Root />
+        </ReduxProvider>
+      </Suspense>
     </NextUIProvider>
   </React.StrictMode>
 );

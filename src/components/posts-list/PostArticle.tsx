@@ -1,71 +1,45 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, Button } from "@nextui-org/react";
 import Avatar from "../common/Avatar";
 import { useState } from "react";
-import PostComments, { ICommentValues } from "./PostComments";
+import PostComments from "./PostComments";
+import { IPostItem, IPostItemLangObj } from "../../core/store/types";
+import { updateViewsPostInFirestore } from "../../api/firebase/firestore/updateViewsPostInFirestore";
+import { motion } from "framer-motion";
+import { _createAnimation } from "../../_utils/_createAnimation";
+import { ParseTextRender } from "./ParseTextRender";
 
 interface IProps {
+    postItem: IPostItem,
     isOpen: boolean,
-    onOpenChange: () => void
+    onOpenChange: () => void,
 }
 
-interface IReactionsObj {
-    comments: Array<ICommentValues>,
-    views: number
-}
-
-interface ILangObj {
-    header: string,
-    text: string,
-}
-
-type ImagesArray = [string, string];
-interface IArticle {
-    images: ImagesArray,
-    langs: {
-        EN: ILangObj,
-        UA: ILangObj,
-        RU: ILangObj,
-    },
-    reactions: IReactionsObj
-}
-
-export const PostArticle = ({ isOpen, onOpenChange }: IProps) => {
-    const article: IArticle = {
-        images: [process.env.PUBLIC_URL + 'assets/img1.png', process.env.PUBLIC_URL + 'assets/img2.png'],
-        langs: {
-            EN: {
-                header: 'The Impact of Technology on the Workplace: How Technology is Changing',
-                text: 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Natus enim delectus et alias, ducimus corrupti obcaecati odit atque sapiente vel asperiores! Expedita, incidunt! Possimus rerum fugiat incidunt architecto, nemo laborum! Officia suscipit enim quas commodi eligendi optio dolor rem. Distinctio autem omnis, exercitationem perferendis sint voluptatem delectus nemo quibusdam nihil praesentium quam cum. Temporibus doloremque dolor ipsum laboriosam ad dolorem!'
-            },
-            UA: {
-                header: 'Вплив технологій на робоче місце: як технології змінюються',
-                text: 'Вочевидь, зараз не всі пригадають цю серпневу дату – вісімнадцяте святкування Дня Незалежності України. Відлік десятилітньої історії Вишиванкового фестивалю розпочався саме тоді, коли сімдесят дев’ять людей, убраних у виши́ванки, утворили вздовж Потьомкінських сходів так званий «живий ланцюг». Амбітні плани організаторів повністю виправдалися: він сягнув-таки берега моря. Простягаючись білою ниткою від п’єдесталу пам’ятника Рішельє, ланцюг із року в рік ставав усе довшим, а разом із цим зростало й усвідомлення Одеси як українського міста. Зростало настільки, що в 2014 році, незважаючи на невпинну зливу, для участі в акції «Вишиванковий ланцюг» вишикувалася півторатисячна черга, утворивши нескінченне живе море виши́ванок.'
-            },
-            RU: {
-                header: 'Влияние технологий на рабочее место: как технологии меняются',
-                text: 'Наши тексты на русском написаны преподавателями этого языка и разделены на разные уровни сложности и темы. Выберите тот, который лучше всего соответствует вашим потребностям или вкусам. Тексты сопровождаются аудиофайлами, чтобы вы могли слышать правильное произношение слов и предложений. При желании вы также можете скачать наши тексты на русском в формате PDF.'
-            }
-        },
-        reactions: {
-            comments: [{ name: 'Denis', comment: 'Hello world!' }],
-            views: 1
-        }
-    }
-    const { images: [image1, image2], langs, reactions } = article;
+export const PostArticle = ({ postItem, isOpen, onOpenChange }: IProps) => {
+    const { images, langs, reactions, publicationDate } = postItem;
+    // images pathes
+    const [image1, image2, image3] = images;
     // languages translates
-    const languages = Object.keys(article.langs) as Array<keyof typeof article.langs>;
-    const [selectedLang, setSelectedLang] = useState(languages[0]);
-    const [currentTranslation, setCurrentTranslation] = useState<ILangObj>(article.langs[selectedLang]);
+    const languages = Object.keys(langs) as Array<"EN" | "UA" | "RU">;
+    const [selectedLang, setSelectedLang] = useState<"EN" | "UA" | "RU" | undefined>(languages.find((lang) => lang === 'RU'));
+    const [currentTranslation, setCurrentTranslation] = useState<IPostItemLangObj>(langs[selectedLang || 'EN']);
+
     // reactions states
     const [commentsArray, setCommentsArray] = useState(reactions.comments);
     const [viewsCount, setViewsCount] = useState(reactions.views);
 
     const onOpenChangeFuncHandler = () => {
-        //increment views count
+        // Increment views count in the state
         setViewsCount(viewsCount + 1);
+        // Increment views count and updates views-value in the Firestore
+        updateViewsPostInFirestore(postItem.id);
         // open modal
         onOpenChange();
     }
+
+    // Animations
+    const [h2Initial, h2Animate, h2Transition] = _createAnimation({ y: '20px', opacity: 0, duration: 0.5, delay: 0.2 });
+    const [authorInitial, authorAnimate, authorTransition] = _createAnimation({ y: '20px', opacity: 0, duration: 0.5, delay: 0.4 });
+    const [imageInitial, imageAnimate, imageTransition] = _createAnimation({ y: '20px', opacity: 0, duration: 0.5, delay: 0.6 });
 
     return (
         <article>
@@ -80,13 +54,23 @@ export const PostArticle = ({ isOpen, onOpenChange }: IProps) => {
                     {(onClose) => (
                         <>
                             <ModalHeader className="flex flex-col gap-1 text-gray-text text-sm00">
-                                <h2 className="mb-3 text-xl sm:text-3xl font-semibold text-black dark:text-white-matte">{currentTranslation.header}</h2>
-                                <div className="flex flex-col sm:flex-row items-center justify-between">
+                                <motion.h2
+                                    className="mb-3 text-xl sm:text-3xl font-semibold text-black dark:text-white-matte"
+                                    initial={h2Initial}
+                                    animate={h2Animate}
+                                    transition={h2Transition}
+                                >{currentTranslation.header}</motion.h2>
+                                <motion.div
+                                    className="flex flex-col sm:flex-row items-center justify-between"
+                                    initial={authorInitial}
+                                    animate={authorAnimate}
+                                    transition={authorTransition}
+                                >
                                     <div className="hidden sm:flex items-center self-start gap-x-3 dark:text-gray-text text-xs md:text-base">
                                         <Avatar size="small" />
                                         <div className="flex flex-col md:flex-row gap-1">
                                             <p className="font-semibold">Denis Larin</p>
-                                            <p className="">January 15, 2024</p>
+                                            <p className="">{publicationDate}</p>
                                         </div>
                                     </div>
 
@@ -111,28 +95,21 @@ export const PostArticle = ({ isOpen, onOpenChange }: IProps) => {
                                                 </Button>
                                             )
                                         })}
-
                                     </div>
-                                </div>
+                                </motion.div>
                             </ModalHeader>
                             <ModalBody className="text-sm sm:text-xl leading-6 sm:leading-8 ">
-                                <img src={image1} alt="PostImage1" className="rounded-xl" />
-                                <p>
-                                    {currentTranslation.text}
-                                </p>
-                                <h5 className="text-lg sm:text-2xl font-semibold leading-4 sm:leading-7 pt-4 sm:pt-8 pb-4">Research Your Destination</h5>
+                                <motion.img
+                                    src={image1}
+                                    alt="PostImage1"
+                                    className="rounded-xl"
+                                    initial={imageInitial}
+                                    animate={imageAnimate}
+                                    transition={imageTransition}
+                                />
+                                <ParseTextRender text={currentTranslation.text} imageSourse={[image2, image3]} />
 
-                                <img src={image2} alt="PostImage2" className="rounded-xl" />
-                                <h6 className="italic text-center p-4 sm:p-8 bg-[#F6F6F7] dark:bg-dark-light rounded-xl border-l-4 border-gray-text">“ Traveling can expose you to new environments and potential health risks, so it's crucial to take precautions to stay safe and healthy. ”</h6>
-                                {/* 
-                                    Нужно выделять:
-                                        -заголовки
-                                        -абзацы
-                                        -картинки
-                                        -цитаты
-                                */}
-
-                                <PostComments commentsArray={commentsArray} setCommentsArray={setCommentsArray} />
+                                <PostComments postId={postItem.id} commentsArray={commentsArray} setCommentsArray={setCommentsArray} />
                             </ModalBody>
                         </>
                     )}

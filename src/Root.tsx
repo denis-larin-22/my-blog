@@ -3,7 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { Greetings, Footer, Header, LastPost, PostsList } from './components';
 
 function App() {
-  const [toggleVissible, setToggleVissible] = React.useState(true);
+  const [toggleVissible, setToggleVissible] = React.useState(false);
   useEffect(() => {
     setTimeout(() => {
       setToggleVissible(false);

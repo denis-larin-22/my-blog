@@ -1,4 +1,4 @@
-import './index.css';
+import './styles/index.css';
 import { useState, useEffect } from 'react';
 
 const ThemeSwitcher = ({ switcherStyles }: { switcherStyles?: string }) => {

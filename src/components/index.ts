@@ -6,7 +6,7 @@ export * from './common/ContactsIcons';
 export * from './common/Contacts';
 
 export * from './header/Header';
-export * from './header/ThemeSwitcher';
+export * from './common/ThemeSwitcher';
 
 export * from './last-post/LastPost';
 
