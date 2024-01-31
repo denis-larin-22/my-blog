@@ -19,7 +19,7 @@ const LastPostView = ({ lastPublishedPost, filterPostsByCategory }: IProps) => {
     if (lastPublishedPost === null) {
         return null;
     } else {
-        const { langs: { RU: { header } }, categories, publicationDate } = lastPublishedPost;
+        const { langs: { RU: { header } }, images: [image1], categories, publicationDate } = lastPublishedPost;
         // Animation
         const [imgInit, imgAnimate, imgTransition] = _createAnimation({ y: '20%', opacity: 0, duration: 1.2, delay: 0.5 });
         const [blockInit, blockAnimate, blockTransition] = _createAnimation({ opacity: 0, duration: 1, delay: 1.4 });
@@ -30,9 +30,9 @@ const LastPostView = ({ lastPublishedPost, filterPostsByCategory }: IProps) => {
         return (
             <main className="relative container mt-12">
                 <motion.img
-                    src={process.env.PUBLIC_URL + '/assets/Main.png'}
+                    src={image1}
                     alt="Poster"
-                    className="rounded-xl shadow-item group-hover:scale-105 min-h-[500px] md:min-h-fit object-cover"
+                    className="rounded-xl shadow-item group-hover:scale-105 max-h-[80vh] w-screen object-cover"
                     initial={imgInit}
                     animate={imgAnimate}
                     transition={imgTransition}
@@ -46,7 +46,7 @@ const LastPostView = ({ lastPublishedPost, filterPostsByCategory }: IProps) => {
                     <Card
                         isPressable
                         onClick={onOpen}
-                        className="absolute -bottom-28 md:-bottom-52 lg:-bottom-10 left-0 md:left-20 z-0 max-w-[598px] p-5 md:p-10 mx-9 bg-white dark:bg-dark dark:border-1 dark:border-dark-light rounded-xl shadow-item flex flex-col gap-y-5"
+                        className="absolute -bottom-28 md:-bottom-52 lg:-bottom-10 left-0 md:left-20 z-0 max-w-[598px] p-5 md:p-10 mx-9 bg-white dark:bg-dark dark:border-1 dark:border-dark-light rounded-xl shadow-item flex flex-col gap-y-5 hover:scale-105 duration-250"
                     >
                         <motion.ul
                             initial={listInit}

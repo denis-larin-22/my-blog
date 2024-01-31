@@ -1,8 +1,9 @@
-import { Button } from "@nextui-org/react";
-import Avatar from "./Avatar";
+import { Button, Tooltip } from "@nextui-org/react";
 import { GitHubIcon, LinkedInIcon, TelegramIcon } from "./ContactsIcons";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { _createAnimation } from "../../_utils/_createAnimation";
 
 interface ICommentValues {
     email: string,
@@ -10,7 +11,19 @@ interface ICommentValues {
 }
 
 const Contacts = () => {
-    const icons = [{ icon: <TelegramIcon />, link: 'https://t.me/den4ik_larin' }, { icon: <GitHubIcon />, link: 'https://github.com/denis-larin-22' }, { icon: <LinkedInIcon />, link: 'https://www.linkedin.com/in/denis-larin-a12a31241/' }];
+    const { t } = useTranslation();
+    // Animations
+    const [initWrap, animateWrap] = _createAnimation({ y: "-20%", opacity: 0 });
+    const [initLink, animateLink, transitionLink] = _createAnimation({ y: "-20%", opacity: 0, duration: 0.5 });
+    const [initForm, animateForm, transitionForm] = _createAnimation({ y: "-30%", opacity: 0, duration: 0.5 });
+    const [initSent, animateSent, transitionSent] = _createAnimation({ opacity: 0, y: '100%' });
+
+
+    const icons = [
+        { name: "Telegram", icon: <TelegramIcon />, link: 'https://t.me/den4ik_larin' },
+        { name: "GitHub", icon: <GitHubIcon />, link: 'https://github.com/denis-larin-22' },
+        { name: "LinkedIn", icon: <LinkedInIcon />, link: 'https://www.linkedin.com/in/denis-larin-a12a31241/' }
+    ];
 
     const initInputsValues: ICommentValues = {
         email: '',
@@ -27,24 +40,37 @@ const Contacts = () => {
     }
 
     return (
-        <motion.section layout
+        <motion.section
+            layout
             className="bg-gray-light dark:bg-dark-light dark:text-white-matte px-5 py-12 flex flex-col gap-y-6 items-center justify-center"
-            initial={{ y: "-20%", opacity: 0 }}
-            animate={{ y: "0%", opacity: 1 }}
-            exit={{ y: "-20%", opacity: 0 }}
+            initial={initWrap}
+            animate={animateWrap}
+            exit={initWrap}
             transition={{ type: "spring", stiffness: 200, damping: 25 }}
         >
             <ul className="flex gap-x-3">
                 {
                     icons.map((item, index) => (
-                        <li key={index}>
-                            <a href={item.link} target="blank" >{item.icon}</a>
-                        </li>
+                        <motion.li
+                            key={index}
+                            initial={initLink}
+                            animate={animateLink}
+                            transition={{ ...transitionLink, delay: (index / 3) + 0.2 }}
+                        >
+                            <Tooltip content={item.name}>
+                                <a href={item.link} target="blank" >{item.icon}</a>
+                            </Tooltip>
+                        </motion.li>
                     ))
                 }
             </ul>
-            <form className="bg-white dark:bg-dark dark:shadow-lg dark:border-2 dark:border-dark rounded-xl p-8 flex flex-col max-w-96 gap-y-2 items-center">
-                <label htmlFor="email" className="mb-5 text-xl font-semibold">Got a question?</label>
+            <motion.form
+                className="bg-white dark:bg-dark dark:shadow-lg dark:border-2 dark:border-dark rounded-xl p-8 flex flex-col max-w-96 gap-y-2 items-center"
+                initial={initForm}
+                animate={animateForm}
+                transition={transitionForm}
+            >
+                <label htmlFor="email" className="mb-5 text-xl font-semibold">{t("tGotQuestion")}</label>
                 <input
                     type="email"
                     id="email"
@@ -55,7 +81,7 @@ const Contacts = () => {
 
                 />
                 <textarea
-                    placeholder="Question"
+                    placeholder={t("tQuestion")}
                     cols={10}
                     rows={2}
                     className="rounded-md w-full text-black-light dark:text-white-matte py-3 px-3 border-2 border-[#DCDDDF] focus:outline-gray-text dark:bg-dark-light dark:focus:outline-gray-text"
@@ -70,16 +96,18 @@ const Contacts = () => {
                         :
                         null
                 }
-            </form>
+            </motion.form>
 
             <AnimatePresence>
                 {isSent && <motion.p
-                    initial={{ opacity: 0, y: '100%' }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: '100%' }}
-                    transition={{ type: "spring", stiffness: 200, damping: 25 }}
+                    initial={initSent}
+                    animate={animateSent}
+                    exit={initSent}
+                    transition={transitionSent}
                     className="font-semibold"
-                >✔️Thank you!</motion.p>}
+                >
+                    ✔️{t("tThanks")}
+                </motion.p>}
             </AnimatePresence>
         </motion.section>
     )

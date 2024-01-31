@@ -1,11 +1,11 @@
-import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button } from "@nextui-org/react";
+import { Dropdown, DropdownTrigger, DropdownMenu, DropdownItem, Button, Tooltip } from "@nextui-org/react";
 import { useTranslation } from "react-i18next";
 import i18next from "i18next";
 
 export const LanguageSwitcher = () => {
     const currentLanguage = i18next.language.toUpperCase();
     const language = currentLanguage === 'UK' ? 'UA' : currentLanguage;
-    const { t, i18n } = useTranslation();
+    const { i18n } = useTranslation();
     const changeLanguage = (language: string) => {
         i18n.changeLanguage(language)
     };
@@ -14,7 +14,7 @@ export const LanguageSwitcher = () => {
         <Dropdown >
             <DropdownTrigger>
                 <Button
-                    variant="light"
+                    variant="ghost"
                     size="md"
                 >
                     {language}

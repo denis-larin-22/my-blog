@@ -1,4 +1,4 @@
-import { Modal, ModalContent, ModalHeader, ModalBody, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, Button, Tooltip } from "@nextui-org/react";
 import Avatar from "../common/Avatar";
 import { useState } from "react";
 import PostComments from "./PostComments";
@@ -7,6 +7,7 @@ import { updateViewsPostInFirestore } from "../../api/firebase/firestore/updateV
 import { motion } from "framer-motion";
 import { _createAnimation } from "../../_utils/_createAnimation";
 import { ParseTextRender } from "./ParseTextRender";
+import { t } from "i18next";
 
 interface IProps {
     postItem: IPostItem,
@@ -70,7 +71,7 @@ export const PostArticle = ({ postItem, isOpen, onOpenChange }: IProps) => {
                                         <Avatar size="small" />
                                         <div className="flex flex-col md:flex-row gap-1">
                                             <p className="font-semibold">Denis Larin</p>
-                                            <p className="">{publicationDate}</p>
+                                            <p className="font-normal">{publicationDate}</p>
                                         </div>
                                     </div>
 
@@ -81,18 +82,19 @@ export const PostArticle = ({ postItem, isOpen, onOpenChange }: IProps) => {
                                         <svg xmlns="http://www.w3.org/2000/svg" height="18" viewBox="0 -960 960 960" width="18" className="dark:fill-gray-text"><path d="M240-400h320v-80H240v80Zm0-120h480v-80H240v80Zm0-120h480v-80H240v80ZM80-80v-720q0-33 23.5-56.5T160-880h640q33 0 56.5 23.5T880-800v480q0 33-23.5 56.5T800-240H240L80-80Zm126-240h594v-480H160v525l46-45Zm-46 0v-480 480Z" /></svg>
                                         {languages.map((lang, index) => {
                                             return (
-                                                <Button
-                                                    key={lang + index}
-                                                    size="sm"
-                                                    variant="flat"
-                                                    color={selectedLang === lang ? 'primary' : 'default'}
-                                                    onClick={() => {
-                                                        setCurrentTranslation(langs[lang]);
-                                                        setSelectedLang(lang)
-                                                    }}
-                                                >
-                                                    {lang}
-                                                </Button>
+                                                <Tooltip key={index} content={t("tSelectPostLanguage")}>
+                                                    <Button
+                                                        size="sm"
+                                                        variant="flat"
+                                                        color={selectedLang === lang ? 'primary' : 'default'}
+                                                        onClick={() => {
+                                                            setCurrentTranslation(langs[lang]);
+                                                            setSelectedLang(lang)
+                                                        }}
+                                                    >
+                                                        {lang}
+                                                    </Button>
+                                                </Tooltip>
                                             )
                                         })}
                                     </div>
@@ -102,7 +104,7 @@ export const PostArticle = ({ postItem, isOpen, onOpenChange }: IProps) => {
                                 <motion.img
                                     src={image1}
                                     alt="PostImage1"
-                                    className="rounded-xl"
+                                    className="rounded-xl max-h-[450px] object-cover"
                                     initial={imageInitial}
                                     animate={imageAnimate}
                                     transition={imageTransition}

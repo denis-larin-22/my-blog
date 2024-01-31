@@ -1,8 +1,9 @@
 import { applyMiddleware, compose, createStore } from "redux";
-import logger from 'redux-logger';
 import { thunk } from "redux-thunk";
 import { reducer } from "./reducer";
-const loger: any = logger;
+// import logger from 'redux-logger';
+// const loger: any = logger;
 
-const enhancer = compose(applyMiddleware(loger, thunk));
+// const enhancer = compose(applyMiddleware(loger, thunk)); For logging prew- next- states
+const enhancer = compose(applyMiddleware(thunk));
 export const store = createStore(reducer, enhancer);

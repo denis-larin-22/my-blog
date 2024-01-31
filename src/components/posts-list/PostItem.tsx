@@ -15,12 +15,11 @@ export const PostItem = ({ postItem, filterPostsByCategory }: IProps) => {
 
     return (
         <>
-            <Card onClick={onOpen} isPressable className="max-w-[392px] p-4 rounded-xl border-1 dark:bg-dark border-[#E8E8EA] dark:border-dark-light flex flex-col gap-5">
-                <Image
+            <Card onClick={onOpen} isPressable className="w-full p-4 rounded-xl border-1 dark:bg-dark border-[#E8E8EA] dark:border-dark-light flex flex-col gap-5 hover:scale-105 duration-250">
+                <img
                     alt="Card poster"
                     src={image1}
-                    isZoomed
-                    className="h-52 dark:brightness-75"
+                    className="h-52 w-full object-cover dark:brightness-75 rounded-xl"
                 />
                 <ul className="">
                     {categories.map((category, index) => (

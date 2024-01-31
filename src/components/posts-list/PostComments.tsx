@@ -2,6 +2,7 @@ import { Button } from "@nextui-org/react";
 import { useState } from "react";
 import { IPostItemCommentValues } from "../../core/store/types";
 import { updateCommentsPostInFirestore } from "../../api";
+import { useTranslation } from "react-i18next";
 
 interface IProps {
     postId: string,
@@ -10,6 +11,8 @@ interface IProps {
 }
 
 const PostComments = ({ postId, commentsArray, setCommentsArray }: IProps) => {
+    const { t } = useTranslation();
+
     const [commentsList, setCommetsList] = useState(commentsArray);
     const initInputsValues: IPostItemCommentValues = {
         name: '',
@@ -32,11 +35,11 @@ const PostComments = ({ postId, commentsArray, setCommentsArray }: IProps) => {
 
     return (
         <div className="flex flex-col gap-2 pt-2 text-sm sm:text-base leading-6 sm:leading-8  border-t-1 border-gray-300">
-            <p className="text-black-light dark:text-white-matte font-semibold">Leave  a comment:</p>
+            <p className="text-black-light dark:text-white-matte font-semibold">{t("tLeaveComment")}</p>
             <input
                 type="text"
                 className="bg-gray-200 dark:bg-dark-light rounded-lg p-2 focus:outline-gray-text"
-                placeholder="Name"
+                placeholder={t("tName")}
                 value={inputsValues.name}
                 onChange={(e) => setInputsValues({ ...inputsValues, name: e.target.value })}
             />
@@ -45,7 +48,7 @@ const PostComments = ({ postId, commentsArray, setCommentsArray }: IProps) => {
                 onChange={(e) => setInputsValues({ ...inputsValues, comment: e.target.value })}
                 cols={30} rows={2}
                 className="bg-gray-200 dark:bg-dark-light rounded-lg p-2 focus:outline-gray-text"
-                placeholder="Comment"
+                placeholder={t("tComment")}
             ></textarea>
             {
                 inputsValues.name.length !== 0 &&

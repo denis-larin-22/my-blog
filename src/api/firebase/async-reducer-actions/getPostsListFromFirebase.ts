@@ -2,6 +2,7 @@ import { Dispatch } from "redux";
 import { getInitPostListAction, setCurrentPostListAction } from "../../../core/store";
 import { getProductsFromStorage } from "../firestore/getPostsListFromFirestore";
 import { getPostImagesFromStorage } from "../storage/getPostImagesFromStorage";
+import { IPostItem } from "../../../core/store/types";
 
 type GetPostsListAction = {
     type: string;
@@ -21,7 +22,14 @@ export const getPostsListFromFirebase = () => {
         });
 
         const resultList = await Promise.all(listWithImages);
-        dispatch(getInitPostListAction(resultList));
-        dispatch(setCurrentPostListAction(resultList));
+        const compareDates = (a: IPostItem | any, b: IPostItem | any): number => {
+            const dateA = a.publicationDate.split('.').reverse().join('');
+            const dateB = b.publicationDate.split('.').reverse().join('');
+
+            return dateA.localeCompare(dateB);
+        };
+        const sortedListByPublicationDate = resultList.sort(compareDates);
+        dispatch(getInitPostListAction(sortedListByPublicationDate));
+        dispatch(setCurrentPostListAction(sortedListByPublicationDate));
     }
 }

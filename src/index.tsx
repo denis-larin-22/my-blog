@@ -13,7 +13,7 @@ const root = ReactDOM.createRoot(
 root.render(
   <React.StrictMode>
     <NextUIProvider>
-      <Suspense fallback={<Spinner size='lg' />}>
+      <Suspense fallback={<Spinner size='lg' className='w-screen h-screen flex items-center justify-center' />}>
         <ReduxProvider store={store}>
           <Root />
         </ReduxProvider>
