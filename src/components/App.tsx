@@ -4,7 +4,7 @@ import { Greetings, Footer, Header, LastPost, PostsList } from './index';
 import { AddNewPost } from './admin/AddNewPost';
 
 function App() {
-    const [toggleVissible, setToggleVissible] = useState(false);
+    const [toggleVissible, setToggleVissible] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     useEffect(() => {
         setTimeout(() => {
